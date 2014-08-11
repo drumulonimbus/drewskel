@@ -17,24 +17,37 @@ fi
 # bash profile
 echo "Setting up $HOME/.bash_profile:"
 if [ -e "$HOME/.bash_profile" ]; then
-
+	echo -n " - Copying $HOME/.bash_profile to $HOME/.bash_profile.OLD: "
+	cp $HOME/.bash_profile $HOME/.bash_profile.OLD || echo "FAILED!"
+	echo "Complete."
+else
+	echo " - $HOME/.bash_profile not found, continuing anyway."
 fi
+
+#copy it into place
+echo -n " - Copying $SCRIPTHOME/.bash_profile to $HOME/.bash_profile: "
+cp $SCRIPTHOME/.bash_profile $HOME/.bash_profile || echo "FAILED!"
+echo "Complete."
+
+# source it?
+#source $HOME/.bash_profile
+
 
 # ssh setup
 
-echo "Setting up ssh keys and config:"
+echo "Setting up ssh keys and config: "
 
 if [ -d "$HOME/.ssh" ]; then
 	echo " - $HOME/.ssh found."
 
 	# are the perms correct?
-	SSH_DIR_PERMS=$(stat -f %p $HOME/.ssh | cut -b 3-5)
-	if [ "$SSH_DIR_PERMS" != "700" ]; then
-		echo " - $HOME/.ssh permissions are not 700! Fix your shit! Exiting..."
-		exit 1
-	else
-		echo " - $HOME/.ssh permissions are correct"
-	fi
+	#SSH_DIR_PERMS=$(stat -f %p $HOME/.ssh | cut -b 3-5)
+	#if [ "$SSH_DIR_PERMS" != "700" ]; then
+	#	echo " - $HOME/.ssh permissions are not 700! Fix your shit! Exiting..."
+	#	exit 1
+	#else
+	#	echo " - $HOME/.ssh permissions are correct."
+	#fi
 
 	# back up authorized_keys
 	if [ -e "$HOME/.ssh/authorized_keys" ]; then
@@ -54,10 +67,10 @@ if [ -d "$HOME/.ssh" ]; then
 else
 	echo -n " - $HOME/.ssh not found! Creating: "
 	mkdir $HOME/.ssh
-	echo "Complete.""
+	echo "Complete."
 	echo -n " - setting permissions on $HOME/.ssh: "
 	chmod 700
-	echo "Complete.""
+	echo "Complete."
 fi
 
 # put the new files in place:
